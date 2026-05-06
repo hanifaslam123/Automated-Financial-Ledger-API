@@ -1,109 +1,87 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Zap, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPw, setShowPw] = useState(false);
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setLoading(true); setError('');
     try {
-      await login(email, password);
+      await login(form.email, form.password);
       navigate('/dashboard');
     } catch {
-      setError('Invalid email or password. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+      setError('Invalid email or password.');
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg">
-            <ShieldCheck size={32} className="text-white" />
+    <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="flex items-center gap-3 justify-center mb-8">
+          <div className="bg-[#c8f135] p-2 rounded-xl">
+            <Zap size={24} className="text-[#0e0e0e]" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Financial Ledger</h1>
-          <p className="text-slate-400 mt-1 text-sm">Automated Double-Entry API Dashboard</p>
+          <div>
+            <h1 className="text-xl font-bold text-[#f0f0f0]">LedgeMains</h1>
+            <p className="text-xs text-[#555]">Automated Financial Ledger</p>
+          </div>
         </div>
-
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-6">Sign in to your account</h2>
-
+        <div className="card">
+          <h2 className="text-lg font-bold text-[#f0f0f0] mb-1">Welcome back</h2>
+          <p className="text-sm text-[#555] mb-6">Sign in to your account</p>
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-[#ff4d4d]/10 border border-[#ff4d4d]/20 rounded-xl text-[#ff4d4d] text-sm">
               {error}
             </div>
           )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label">Email address</label>
+              <label className="label">Email</label>
               <input
-                type="email"
                 className="input"
+                type="email"
                 placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 required
-                autoFocus
               />
             </div>
-
             <div>
               <label className="label">Password</label>
               <div className="relative">
                 <input
-                  type={showPw ? 'text' : 'password'}
                   className="input pr-10"
+                  type={showPass ? 'text' : 'password'}
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                   required
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  onClick={() => setShowPw(!showPw)}
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#f0f0f0]"
                 >
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2"
-            >
-              {loading ? <><Loader2 size={16} className="animate-spin" /> Signing in...</> : 'Sign in'}
+            <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+              {loading ? <><Loader2 size={16} className="animate-spin" /> Signing in...</> : 'Sign In'}
             </button>
           </form>
-
-          <p className="mt-6 text-center text-sm text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-blue-600 font-semibold hover:underline">
-              Create one
-            </Link>
-          </p>
         </div>
-
-        {/* Demo hint */}
-        <p className="text-center text-xs text-slate-500 mt-4">
-          Default admin: <span className="text-slate-300 font-mono">admin@ledger.io / Admin@1234!</span>
+        <p className="text-center text-sm text-[#555] mt-4">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-[#c8f135] hover:underline font-medium">Register</Link>
         </p>
       </div>
     </div>
