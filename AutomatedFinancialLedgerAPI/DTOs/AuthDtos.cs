@@ -2,48 +2,68 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AutomatedFinancialLedgerAPI.DTOs;
 
-// ─── Login ────────────────────────────────────────────────────────────────────
-
+// --- Login --------------------------------------------------------------
 public class LoginRequestDto
 {
-    [Required, EmailAddress]
-    public string Email { get; set; } = string.Empty;
+        [Required, EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
-    [Required, MinLength(8)]
-    public string Password { get; set; } = string.Empty;
+        [Required, MinLength(8)]
+        public string Password { get; set; } = string.Empty;
 }
 
 public class LoginResponseDto
 {
-    public string Token    { get; set; } = string.Empty;
-    public string Email    { get; set; } = string.Empty;
-    public string FullName { get; set; } = string.Empty;
-    public string Role     { get; set; } = string.Empty;
-    public DateTime ExpiresAt { get; set; }
+        public string Token    { get; set; } = string.Empty;
+        public string Email    { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Role     { get; set; } = string.Empty;
+        public DateTime ExpiresAt { get; set; }
 }
 
-// ─── Register ─────────────────────────────────────────────────────────────────
-
+// --- Register -----------------------------------------------------------
 public class RegisterRequestDto
 {
-    [Required, MaxLength(100)]
-    public string FullName { get; set; } = string.Empty;
+        [Required, MaxLength(100)]
+        public string FullName { get; set; } = string.Empty;
 
-    [Required, EmailAddress, MaxLength(200)]
-    public string Email { get; set; } = string.Empty;
+        [Required, EmailAddress, MaxLength(200)]
+        public string Email { get; set; } = string.Empty;
 
-    [Required, MinLength(8), MaxLength(100)]
-    public string Password { get; set; } = string.Empty;
+        [Required, MinLength(8), MaxLength(100)]
+        public string Password { get; set; } = string.Empty;
 
-    /// <summary>Admin | Accountant | Viewer</summary>
-    [Required]
-    public string Role { get; set; } = "Viewer";
+        /// <summary>Admin | Accountant | Viewer</summary>
+        [Required]
+        public string Role { get; set; } = "Viewer";
 }
 
 public class RegisterResponseDto
 {
-    public string Id       { get; set; } = string.Empty;
-    public string FullName { get; set; } = string.Empty;
-    public string Email    { get; set; } = string.Empty;
-    public string Role     { get; set; } = string.Empty;
+        public string Id       { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Email    { get; set; } = string.Empty;
+        public string Role     { get; set; } = string.Empty;
+}
+
+// --- Password reset -----------------------------------------------------
+public class ForgotPasswordRequestDto
+{
+        [Required, EmailAddress, MaxLength(200)]
+        public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordRequestDto
+{
+        [Required, MaxLength(256)]
+        public string Token { get; set; } = string.Empty;
+
+        [Required, MinLength(8), MaxLength(100)]
+        public string NewPassword { get; set; } = string.Empty;
+}
+
+/// <summary>Generic single-message response used by auth flows.</summary>
+public class MessageResponseDto
+{
+        public string Message { get; set; } = string.Empty;
 }
