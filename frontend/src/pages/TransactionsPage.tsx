@@ -4,17 +4,16 @@ import { Plus, Search, RefreshCw, ArrowLeftRight } from 'lucide-react';
 import { transactionsApi, Transaction } from '../api/ledgerApi';
 import { format } from 'date-fns';
 
-const fmt = (n: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
 
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   const map: Record<string, string> = {
-    Posted:  'bg-green-100 text-green-700',
-    Pending: 'bg-yellow-100 text-yellow-700',
-    Voided:  'bg-red-100 text-red-600 line-through',
+    Posted: 'bg-[#c8f135]/10 text-[#c8f135]',
+    Pending: 'bg-[#f59e0b]/10 text-[#f59e0b]',
+    Voided: 'bg-[#555]/10 text-[#555] line-through',
   };
   return (
-    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold ${map[status] ?? 'bg-slate-100 text-slate-600'}`}>
+    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold ${map[status] ?? 'bg-[#2a2a2a] text-[#555]'}`}>
       {status}
     </span>
   );
@@ -33,13 +32,9 @@ const TransactionsPage: React.FC = () => {
     setLoading(true); setError('');
     try {
       const data = await transactionsApi.list({ pageSize: 100 });
-      setTxns(data);
-      setFiltered(data);
-    } catch {
-      setError('Failed to load transactions. Is the API running?');
-    } finally {
-      setLoading(false);
-    }
+      setTxns(data); setFiltered(data);
+    } catch { setError('Failed to load transactions. Is the API running?'); }
+    finally { setLoading(false); }
   };
 
   useEffect(() => { load(); }, []);
@@ -62,25 +57,19 @@ const TransactionsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Transactions</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Double-entry ledger — every transaction has a debit and a credit</p>
+          <h1 className="text-2xl font-bold text-[#f0f0f0]">Transactions</h1>
+          <p className="text-[#555] text-sm mt-0.5">Double-entry ledger — every transaction has a debit and a credit</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={load} className="btn-secondary flex items-center gap-2 text-sm">
-            <RefreshCw size={15} /> Refresh
-          </button>
-          <Link to="/transactions/new" className="btn-primary flex items-center gap-2 text-sm">
-            <Plus size={15} /> New
-          </Link>
+          <button onClick={load} className="btn-secondary flex items-center gap-2 text-sm"><RefreshCw size={15} /> Refresh</button>
+          <Link to="/transactions/new" className="btn-primary flex items-center gap-2 text-sm"><Plus size={15} /> New</Link>
         </div>
       </div>
 
-      {/* Search */}
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555]" />
         <input
           type="text"
           className="input pl-9"
@@ -91,48 +80,47 @@ const TransactionsPage: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">⚠️ {error}</div>
+        <div className="p-4 bg-[#ff4d4d]/10 border border-[#ff4d4d]/20 rounded-xl text-[#ff4d4d] text-sm">⚠️ {error}</div>
       )}
 
-      {/* Table */}
       <div className="card p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-[#1a1a1a] border-b border-[#2a2a2a]">
               <tr>
-                <th className="text-left px-4 py-3 text-slate-500 font-semibold">Reference</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-semibold hidden sm:table-cell">Description</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-semibold hidden lg:table-cell">Debit Account</th>
-                <th className="text-left px-4 py-3 text-slate-500 font-semibold hidden lg:table-cell">Credit Account</th>
-                <th className="text-right px-4 py-3 text-slate-500 font-semibold">Amount</th>
-                <th className="text-center px-4 py-3 text-slate-500 font-semibold hidden md:table-cell">Status</th>
-                <th className="text-right px-4 py-3 text-slate-500 font-semibold">Date</th>
+                <th className="text-left px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide">Reference</th>
+                <th className="text-left px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide hidden sm:table-cell">Description</th>
+                <th className="text-left px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide hidden lg:table-cell">Debit</th>
+                <th className="text-left px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide hidden lg:table-cell">Credit</th>
+                <th className="text-right px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide">Amount</th>
+                <th className="text-center px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide hidden md:table-cell">Status</th>
+                <th className="text-right px-4 py-3 text-[#555] font-semibold text-xs uppercase tracking-wide">Date</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr><td colSpan={7} className="text-center py-16">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#c8f135] mx-auto" />
                 </td></tr>
               ) : paginated.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-16 text-slate-400">
+                <tr><td colSpan={7} className="text-center py-16 text-[#555]">
                   <ArrowLeftRight size={36} className="mx-auto mb-2 opacity-30" />
                   <p>{search ? 'No transactions match your search.' : 'No transactions yet.'}</p>
                   {!search && (
-                    <Link to="/transactions/new" className="text-blue-600 hover:underline text-sm font-medium">
+                    <Link to="/transactions/new" className="text-[#c8f135] hover:underline text-sm font-medium">
                       Post your first transaction →
                     </Link>
                   )}
                 </td></tr>
               ) : paginated.map(t => (
-                <tr key={t.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-slate-600 whitespace-nowrap">{t.referenceNumber}</td>
-                  <td className="px-4 py-3 text-slate-700 hidden sm:table-cell max-w-xs truncate">{t.description}</td>
+                <tr key={t.id} className="border-b border-[#1e1e1e] hover:bg-[#1a1a1a] transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-[#888] whitespace-nowrap">{t.referenceNumber}</td>
+                  <td className="px-4 py-3 text-[#ccc] hidden sm:table-cell max-w-xs truncate">{t.description}</td>
                   <td className="px-4 py-3 hidden lg:table-cell"><span className="badge-debit">{t.debitAccountName}</span></td>
                   <td className="px-4 py-3 hidden lg:table-cell"><span className="badge-credit">{t.creditAccountName}</span></td>
-                  <td className="px-4 py-3 text-right font-semibold text-slate-900 whitespace-nowrap">{fmt(t.amount)}</td>
+                  <td className="px-4 py-3 text-right font-semibold text-[#c8f135] whitespace-nowrap">{fmt(t.amount)}</td>
                   <td className="px-4 py-3 text-center hidden md:table-cell"><StatusBadge status={t.status} /></td>
-                  <td className="px-4 py-3 text-right text-slate-500 text-xs whitespace-nowrap">
+                  <td className="px-4 py-3 text-right text-[#555] text-xs whitespace-nowrap">
                     {format(new Date(t.transactionDate || t.createdAt), 'MMM d, yyyy')}
                   </td>
                 </tr>
@@ -140,11 +128,9 @@ const TransactionsPage: React.FC = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-slate-50">
-            <p className="text-sm text-slate-500">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-[#2a2a2a] bg-[#1a1a1a]">
+            <p className="text-sm text-[#555]">
               Showing {((page-1)*PAGE_SIZE)+1}–{Math.min(page*PAGE_SIZE, filtered.length)} of {filtered.length}
             </p>
             <div className="flex gap-1">
